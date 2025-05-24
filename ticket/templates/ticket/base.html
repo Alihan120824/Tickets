@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}SalesTicket{% endblock %}</title>
+</head>
+<body>
+
+    <nav>
+        {% if user.is_authenticated %}
+            Привет, {{ user.username }} |
+            <a href="{% url 'logout' %}">Выйти</a> |
+            <a href="{% url 'profile' %}">Профиль</a>
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </nav>
+
+
+</body>
+</html>

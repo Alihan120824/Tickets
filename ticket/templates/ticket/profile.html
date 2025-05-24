@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Профиль пользователя</h1>
+<h2>Профиль {{ user.username }}</h2>
+
+{% if user.userprofile.avatar %}
+  <img src="{{ user.userprofile.avatar.url }}" width="150">
+{% endif %}
+
+<p><strong>О себе:</strong> {{ user.userprofile.bio }}</p>
+<p><strong>Дата рождения:</strong> {{ user.userprofile.birth_date }}</p>
+<a href="{% url 'index' %}">Выйти из аккаунта</a>
+
+</body>
+</html>
