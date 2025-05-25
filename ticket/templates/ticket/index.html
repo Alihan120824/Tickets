@@ -219,7 +219,7 @@ https://templatemo.com/tm-587-tiya-golf-club
               {% if user.is_authenticated and user.userprofile.role == "admin" %}
                 <a href="#" class="btn btn-danger">Удалить</a>
               {% endif %}
-              <a href="#" class="btn btn-primary">Купить</a>
+                <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-primary">Купить</a>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Ticket(models.Model):
     title = models.CharField(max_length=100)
@@ -13,3 +13,13 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"Название: {self.title} , Дата {self.date}, Цена {self.price}"
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    bought_at = models.DateTimeField(auto_now_add=True)
+
+class Meta:
+    unique_together = ('user', 'ticket')
+
