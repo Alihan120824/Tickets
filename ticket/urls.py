@@ -6,12 +6,12 @@ from django.contrib.auth.views import LogoutView
 
 
 urlpatterns = [
-    # path('index/', views.get_ticket, name='index'),
+    path('index/', views.get_index, name='index'),
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('profile/', views.profile, name='profile'),
-    path('index/', views.get_ticket, name='ticket'),
+    # path('index/', views.get_ticket, name='ticket'),
     path('ticket/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
     path('buy/<int:ticket_id>/', views.my_tickets, name='my_tickets'),
     path('my-tickets/', views.my_tickets, name='my_tickets'),

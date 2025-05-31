@@ -23,3 +23,19 @@ class Purchase(models.Model):
 class Meta:
     unique_together = ('user', 'ticket')
 
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='reviews')
+    text = models.TextField(max_length=500)
+    rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'ticket')
+
+    def __str__(self):
+        return f"{self.user.username} о {self.ticket.title}: {self.rating}★"
+
+
+

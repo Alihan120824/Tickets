@@ -1,14 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm
+from .forms import RegisterForm, ReviewForm, Review
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Ticket, Purchase
 from django.http import HttpResponseForbidden
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 
 def get_index(request):
+    tickets_list = Ticket.objects.filter(is_available=True).order_by('date')
+    paginator = Paginator(tickets_list, 3)
+
+    page_number = request.GET.get('page')
+    tickets = paginator.get_page(page_number)
+
     return render(request, 'ticket/index.html')
 
 
@@ -46,11 +53,11 @@ def logout(request) :
     return render(request, 'ticket/logout.html')
 
 
-
-
-def get_ticket(request):
-    tickets = Ticket.objects.filter(is_available=True).order_by('date')
-    return render(request, 'ticket/index.html', {'tickets': tickets})
+#
+#
+# def get_ticket(request):
+#     tickets = Ticket.objects.filter(is_available=True).order_by('date')
+#     return render(request, 'ticket/index.html', {'tickets': tickets})
 
 
 
@@ -85,6 +92,32 @@ def my_tickets(request):
     return render(request, 'ticket/profile.html', {'purchases': purchases})
 
 
+@login_required
+def ticket_detail(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    already_bought = Purchase.objects.filter(user=request.user, ticket=ticket).exists()
+    can_review = already_bought and not Review.objects.filter(user=request.user, ticket=ticket).exists()
+    reviews = ticket.reviews.all().order_by('-created_at')
+
+    if request.method == 'POST' and can_review:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            messages.success(request, 'Спасибо за отзыв!')
+            return redirect('ticket_detail', ticket_id=ticket.id)
+    else:
+        form = ReviewForm()
+
+    return render(request, 'ticket/event-detail.html', {
+        'ticket': ticket,
+        'already_bought': already_bought,
+        'can_review': can_review,
+        'reviews': reviews,
+        'form': form
+    })
 
 
 
